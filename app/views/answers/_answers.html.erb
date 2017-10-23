@@ -1,0 +1,13 @@
+<h3>Answers</h3>
+
+<% @question.answers.each do |answer| %>
+	<div class="well">
+		<p><strong>Username</strong>: <%= answer.body %>
+
+	<%= link_to "[X]", [answer.question, answer],
+					method: :delete,
+					data: {confirm: 'Are you sure?'} %>
+
+		</p>
+	</div>
+<% end %>

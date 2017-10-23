@@ -1,0 +1,27 @@
+<h1>Edit Question</h1>
+
+<%= form_for :question, url: question_path(@question), method: :patch do |f| %>
+
+	<% if @question.errors.any? %>
+		<% @question.errors.full_messages.each do |msg| %>
+			<div class = "alert alert-danger"><%= msg %></div>
+		<% end %>	
+	<% end %>	
+
+
+	<p>
+		<%= f.label :qtext, 'What is your question?' %><br/>
+		<%= f.text_field(:qtext, {:class => 'form-control'}) %>
+	</p>
+
+	<p>
+		<%= f.label :description, 'Detailed description' %><br/>
+		<%= f.text_area(:description, {:class => 'form-control'}) %>
+	</p>
+
+	<p>
+		<%= f.submit({:class => 'btn btn-primary', :value => 'Submit'}) %>
+	</p>
+
+<% end %>
+

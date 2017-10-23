@@ -1,0 +1,9 @@
+<h1>Questions Home Page</h1>
+
+<% @questions.each do |question| %>
+	<div class="well">
+		<h3><%= question.qtext %></h3>
+		<p><%= question.description %></p>
+		<%= link_to "View Question", question_path(question), :class => 'btn btn-default' %>
+	</div>
+<% end %>
