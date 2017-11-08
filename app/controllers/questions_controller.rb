@@ -16,7 +16,11 @@ class QuestionsController < ApplicationController
 		#render plain: params[:post].inspect
 		@question = Question.new(question_params)
 		if(@question.save)
-			redirect_to @question
+			uri = URI('http://127.0.0.1:5000/stuff')
+			response = Net::HTTP.post_form(uri, 'question' => @question.qtext, 'text' => @question.description)
+			# response = Net::HTTP.get_response(uri)
+			@answer = @question.answers.create(response)
+			redirect_to question_path(@question)
 		else
 			render "new"
 		end
