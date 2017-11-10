@@ -18,9 +18,11 @@ class QuestionsController < ApplicationController
 		if(@question.save)
 			uri = URI('http://127.0.0.1:5000/stuff')
 			response = Net::HTTP.post_form(uri, 'question' => @question.qtext, 'text' => @question.description)
-			# response = Net::HTTP.get_response(uri)
-			@answer = @question.answers.create(response)
-			redirect_to question_path(@question)
+			result = JSON.parse(response.body)
+			result.to_s
+			puts result
+			@answer = @question.answers.create(body: result)
+			redirect_to @question
 		else
 			render "new"
 		end
