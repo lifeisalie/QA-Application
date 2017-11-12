@@ -1,4 +1,6 @@
 class Question < ApplicationRecord
+	belongs_to :user
 	has_many :answers
-	validates :qtext, presence: true, length: {minimum: 5}
+	validates :qtext, presence: false
+	validates :description, presence: true, length: {minimum: 10}
 end

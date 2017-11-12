@@ -5,17 +5,13 @@
 	<% if @question.errors.any? %>
 		<% @question.errors.full_messages.each do |msg| %>
 			<div class = "alert alert-danger"><%= msg %></div>
-		<% end %>	
-	<% end %>	
+		<% end %>
+	<% end %>
 
 
-	<p>
-		<%= f.label :qtext, 'What is your question?' %><br/>
-		<%= f.text_field(:qtext, {:class => 'form-control'}) %>
-	</p>
 
 	<p>
-		<%= f.label :description, 'Detailed description' %><br/>
+		<%= f.label :description, 'What is your Question?' %><br/>
 		<%= f.text_area(:description, {:class => 'form-control'}) %>
 	</p>
 
@@ -23,4 +19,3 @@
 		<%= f.submit({:class => 'btn btn-primary', :value => 'Submit'}) %>
 	</p>
 <% end %>
-

@@ -1,13 +1,79 @@
 <h3>Answers</h3>
-
-<% @question.answers.each do |answer| %>
+<% current_time = DateTime.now %>
+<% @question.answers.all.order("created_at DESC").each do |answer| %>
+	<% question_time = answer.created_at %>
 	<div class="well">
-		<p><strong>Username</strong>: <%= answer.body %>
-
-	<%= link_to "[X]", [answer.question, answer],
+		<li><h4><%= image_tag('normal.png', width: '50', height: '50', class: 'image-circle')%> <%= answer.name%></h4>
+		<h6>Answered <%= distance_of_time_in_words(current_time, question_time)  %>  ago</h6></li>
+		<br/>
+	 <div>Ans:
+		 <% if answer.body.length > 200 %>
+			 <%= truncate(answer.body, length: 200) %>
+			 <%= link_to '...Read more', '', class: "read-more-#{@question.id}-#{answer.id}" %>
+			 <script>
+				 $('.read-more-<%= question.id %>-<%= answer.id %>').on('click', function(e) {
+				 e.preventDefault()
+				 $(this).parent().html('<%= escape_javascript question.answers.order("created_at").last.body %>')
+				 })
+			 </script>
+		 <% else %>
+			 <%= answer.body %>
+	     <% end %>
+	     <div>
+	 		<h2> Average rating </h2>
+	 		<% if answer.reviews.blank? %>
+	 			<div class="average-review-rating" data-score=<%= 0 %>></div>
+	 			<span>Based on <%= answer.reviews.count %> reviews </span>
+	 		<% else %>
+				<div class="average-review-rating" data-score=<%= answer.reviews.average(:rating).present? ? answer.reviews.average(:rating).round(2) : 0%>>
+				</div>
+	 			<span>Based on <%= answer.reviews.count %> reviews </span>
+	 		<% end %>
+	 	 </div>
+ </div>
+	<% if current_user %>
+	 	<% if answer.user_id == current_user.id %>
+			<%= link_to  [answer.question, answer],
 					method: :delete,
-					data: {confirm: 'Are you sure?'} %>
-
+					data: {confirm: 'Are you sure?'} do %><%= image_tag('bin.png', width: '40', height: '40', class: 'image-circle')%>
+	  	<%end%>
+		<% end %>
+		<div>
+			<% review = answer.reviews.find_by(user_id: current_user.id) %>
+			<% if (answer.reviews.find_by(user_id: current_user.id)) %>
+				<%= link_to "update Review", edit_answer_review_path(answer, review) %>
+			<% else %>
+				<%= link_to "Add Review", new_answer_review_path(answer) %>
+			<% end %>
+		</div>
+	<% elsif session[:omniauth] %>
+		<%= link_to "Add Review", new_answer_review_path(answer) %>
+		<% if answer.name ==  session[:omniauth]['info']['name']%>
+			<%= link_to  [answer.question, answer],
+				method: :delete,
+				data: {confirm: 'Are you sure?'} do %><%= image_tag('bin.png', width: '40', height: '40', class: 'image-circle')%><%end%>
+		<% end %>
+	<% end %>
 		</p>
 	</div>
 <% end %>
+
+<script>
+	$('.review-rating').raty({
+		readOnly: true,
+		score: function() {
+			return $(this).attr('data-score');
+		},
+		path: '/assets/'
+	});
+</script>
+
+<script>
+	$('.average-review-rating').raty({
+		readOnly: true,
+		path: '/assets/',
+		score: function() {
+			return $(this).attr('data-score')
+		}
+	});
+</script>

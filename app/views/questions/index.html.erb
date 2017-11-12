@@ -1,9 +1,24 @@
-<h1>Questions Home Page</h1>
+<html>
+<head>
+</head>
 
-<% @questions.each do |question| %>
-	<div class="well">
-		<h3><%= question.qtext %></h3>
-		<p><%= question.description %></p>
-		<%= link_to "View Question", question_path(question), :class => 'btn btn-default' %>
-	</div>
+<body>
+<% @auth = session[:omniauth] if session[:omniauth] %>
+
+<% if current_user or @auth %>
+	<% current_time = DateTime.now %>
+	<% @questions.each do |question| %>
+		<div class="well">
+
+			<h3><%= link_to question.description, question_path(question) %></h3>
+			<% question_time = question.created_at	 %>
+			<h6>Asked by <%= question.name %> <%= distance_of_time_in_words(current_time, question_time)  %>  ago</h6>
+		</div>
+		<% end  %>
+		<%= will_paginate @questions %>
+<% else %>
+	<h1 style="text-align:center"> Q/A App </h1>
+	<h2 style="text-align:center"> A place to share knowledge </h2>
+
 <% end %>
+</body>
